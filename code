@@ -1,0 +1,58 @@
+fun main() {
+    val russianAlphabet = listOf(
+        'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ь', 'Ы', 'Ъ', 'Э', 'Ю', 'Я'
+    )
+
+    println("Do you want to encrypt or decrypt a text?")
+    val action = readLine()!!.trim().toLowerCase()
+
+    if (action == "encrypt" || action == "decrypt") {
+        println("Enter the keyword:")
+        val keyword = readLine()!!.trim().toUpperCase()
+
+        println("Enter the text:")
+        val text = readLine()!!.trim().toUpperCase()
+
+        val keywordShifts = keyword.map { russianAlphabet.indexOf(it) + 1 }
+
+        if (action == "encrypt") {
+            val encryptedText = encrypt(text, keywordShifts, russianAlphabet)
+            println("Encrypted text: $encryptedText")
+        } else {
+            val decryptedText = decrypt(text, keywordShifts, russianAlphabet)
+            println("Decrypted text: $decryptedText")
+        }
+    } else {
+        println("Invalid action. Please enter 'encrypt' or 'decrypt'.")
+    }
+}
+
+fun encrypt(text: String, keywordShifts: List<Int>, russianAlphabet: List<Char>): String {
+    val encryptedText = StringBuilder()
+    var keywordIndex = 0
+
+    for (char in text) {
+        val charIndex = russianAlphabet.indexOf(char)
+        val shift = keywordShifts[keywordIndex % keywordShifts.size]
+        val newIndex = (charIndex + shift) % russianAlphabet.size
+        encryptedText.append(russianAlphabet[newIndex])
+        keywordIndex++
+    }
+
+    return encryptedText.toString()
+}
+
+fun decrypt(text: String, keywordShifts: List<Int>, russianAlphabet: List<Char>): String {
+    val decryptedText = StringBuilder()
+    var keywordIndex = 0
+
+    for (char in text) {
+        val charIndex = russianAlphabet.indexOf(char)
+        val shift = keywordShifts[keywordIndex % keywordShifts.size]
+        val newIndex = (charIndex - shift + russianAlphabet.size) % russianAlphabet.size
+        decryptedText.append(russianAlphabet[newIndex])
+        keywordIndex++
+    }
+
+    return decryptedText.toString()
+}
